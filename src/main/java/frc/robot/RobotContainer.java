@@ -10,9 +10,12 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.Joystick;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.Constants.DriveConstants;
+
+import edu.wpi.first.wpilibj2.command.RunCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -35,7 +38,7 @@ public class RobotContainer {
   // subsystem
   private final DriveTrain m_robotDrive = new DriveTrain();
   // joystick 
-  private final Joystick m_StickOfHope = new Joystick(0);
+  private final CommandJoystick m_StickOfHope = new CommandJoystick(0);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -44,9 +47,9 @@ public class RobotContainer {
       // Forward motion controls x speed (forward), sideways motion controls y speed (sideways).
         new RunCommand (  
           () -> m_robotDrive.drive( 
-            m_StickOfHope.getx(),
+          m_StickOfHope.getX(),
           m_StickOfHope.getY(), 
-          m_StickofHope.getz(),
+          m_StickOfHope.getZ(),
           DriveConstants.kTeleField),m_robotDrive)
                
         );
