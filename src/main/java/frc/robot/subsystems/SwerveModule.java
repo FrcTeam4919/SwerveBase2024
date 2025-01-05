@@ -32,7 +32,7 @@ public class SwerveModule extends SubsystemBase {
   private final CANCoder m_turningEncoder;
 
   private final SparkPIDController m_drivePIDController;
-  private final SparkPIDController m_turningPIDController;
+  private final PIDController m_turningPIDController = new PIDController(SwerveConstants.turnGainP, SwerveConstants.turnGainI, SwerveConstants.turnGainD);
 
   private int m_driveMotorChannel; //for debugging
 
@@ -64,8 +64,8 @@ public class SwerveModule extends SubsystemBase {
     //setup turning motor info
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningEncoder = new CANCoder(turningEncoderChannel);
-    m_turningPIDController = m_turningMotor.getPIDController();
-    m_turningPIDController.setFeedbackDevice(m_turningEncoder);
+    //m_turningPIDController = m_turningMotor.getPIDController();
+    //m_turningPIDController.setFeedbackDevice(m_turningEncoder);
     m_turningMotor.restoreFactoryDefaults();
 
     // Apply position and velocity conversion factors for the driving encoder. The
@@ -74,10 +74,10 @@ public class SwerveModule extends SubsystemBase {
     m_driveEncoder.setPositionConversionFactor(SwerveConstants.kDrivingEncoderPositionFactor);
     m_driveEncoder.setVelocityConversionFactor(SwerveConstants.kDrivingEncoderVelocityFactor);
 
-    m_turningEncoder.setPositionConversionFactor(SwerveConstants.kTurningEncoderPositionFactor);
-    m_turningEncoder.setVelocityConversionFactor(SwerveConstants.kTurningEncoderVelocityFactor);
+    //m_turningEncoder.setPositionConversionFactor(SwerveConstants.kTurningEncoderPositionFactor);
+    //m_turningEncoder.setVelocityConversionFactor(SwerveConstants.kTurningEncoderVelocityFactor);
 
-    m_turningEncoder.setInverted(SwerveConstants.kTurningEncoderInverted);
+    //m_turningEncoder.setInverted(SwerveConstants.kTurningEncoderInverted);
 
     // Set the PID gains for the driving motor. 
     // May need to tune.
@@ -89,12 +89,13 @@ public class SwerveModule extends SubsystemBase {
 
      // Set the PID gains for the turning motor. Note these are example gains, and you
     // may need to tune them for your own robot!
-    m_turningPIDController.setP(SwerveConstants.turnGainP);
+    /*m_turningPIDController.setP(SwerveConstants.turnGainP);
     m_turningPIDController.setI(SwerveConstants.turnGainI);
     m_turningPIDController.setD(SwerveConstants.turnGainD);
     m_turningPIDController.setFF(0);
     m_turningPIDController.setOutputRange(SwerveConstants.kTurningMinOutput,
-        SwerveConstants.kTurningMaxOutput);
+        SwerveConstants.kTurningMaxOutput);*/
+    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
 
     // Set the distance (in this case, angle) in radians per pulse for the turning encoder.
@@ -110,9 +111,10 @@ public class SwerveModule extends SubsystemBase {
     // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
     // to 10 degrees will go through 0 rather than the other direction which is a
     // longer route.
-    m_turningPIDController.setPositionPIDWrappingEnabled(true);
+    /*m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(SwerveConstants.kTurningEncoderPositionPIDMinInput);
     m_turningPIDController.setPositionPIDWrappingMaxInput(SwerveConstants.kTurningEncoderPositionPIDMaxInput);
+    */
 
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
@@ -147,16 +149,16 @@ public class SwerveModule extends SubsystemBase {
    
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivePIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
-    m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+    //m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
-/*
+
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
-        m_turningPIDController.calculate(m_turningEncoder.getDistance(), state.angle.getRadians());
+        m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition(), optimizedDesiredState.angle.getRadians());
 
     // Calculate the turning motor output from the turning PID controller.
     //m_driveMotor.set(driveOutput);
-    m_turningMotor.set(turnOutput);*/
+    m_turningMotor.set(turnOutput);
     
     m_desiredState = desiredState;
     
