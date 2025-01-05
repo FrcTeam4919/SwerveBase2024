@@ -30,18 +30,18 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
-  }
+  
   // subsystem
   private final DriveTrain m_robotDrive = new DriveTrain();
   // joystick 
   private final CommandJoystick m_StickOfHope = new CommandJoystick(0);
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
+ 
+    // Configure the trigger bindings
+    configureBindings();
     //Configure driving default
     m_robotDrive.setDefaultCommand(
       // Forward motion controls x speed (forward), sideways motion controls y speed (sideways).
