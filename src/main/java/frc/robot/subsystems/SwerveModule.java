@@ -12,7 +12,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.AbsoluteEncoder;
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,7 +32,8 @@ public class SwerveModule extends SubsystemBase {
   private final CANSparkMax m_turningMotor;
 
   private final RelativeEncoder m_driveEncoder;
-  private final CANCoder m_turningEncoder;
+  private final CANcoder m_turningEncoder;
+  private final RelativeEncoder turnEncoder2;
 
   private final SparkPIDController m_drivePIDController;
   private final PIDController m_turningPIDController = new PIDController(SwerveConstants.turnGainP, SwerveConstants.turnGainI, SwerveConstants.turnGainD);
@@ -63,10 +67,20 @@ public class SwerveModule extends SubsystemBase {
 
     //setup turning motor info
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-    m_turningEncoder = new CANCoder(turningEncoderChannel);
+    m_turningEncoder = new CANcoder(turningEncoderChannel);
+    turnEncoder2 = m_turningMotor.getEncoder();
     //m_turningPIDController = m_turningMotor.getPIDController();
     //m_turningPIDController.setFeedbackDevice(m_turningEncoder);
     m_turningMotor.restoreFactoryDefaults();
+
+    /* Configure CANcoder */
+    var toApply = new CANcoderConfiguration();
+
+    /* User can change the configs if they want, or leave it empty for factory-default */
+    m_turningEncoder.getConfigurator().apply(toApply);
+
+    /* Speed up signals to an appropriate rate */
+    BaseStatusSignal.setUpdateFrequencyForAll(100, m_turningEncoder.getPosition(), m_turningEncoder.getVelocity());
 
     // Apply position and velocity conversion factors for the driving encoder. The
     // native units for position and velocity are rotations and RPM, respectively,
@@ -117,7 +131,7 @@ public class SwerveModule extends SubsystemBase {
     */
 
     m_chassisAngularOffset = chassisAngularOffset;
-    m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
+    m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble());
     m_driveEncoder.setPosition(0);
   }
 
@@ -144,7 +158,7 @@ public class SwerveModule extends SubsystemBase {
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
-        new Rotation2d(m_turningEncoder.getPosition()));
+        new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble()));
 
    
     // Command driving and turning SPARKS MAX towards their respective setpoints.
@@ -154,7 +168,7 @@ public class SwerveModule extends SubsystemBase {
 
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
-        m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition(), optimizedDesiredState.angle.getRadians());
+        m_turningPIDController.calculate(m_turningEncoder.getPosition().getValueAsDouble(), optimizedDesiredState.angle.getRadians());
 
     // Calculate the turning motor output from the turning PID controller.
     //m_driveMotor.set(driveOutput);
@@ -169,7 +183,7 @@ public class SwerveModule extends SubsystemBase {
     // relative to the chassis.
     return new SwerveModulePosition(
         m_driveEncoder.getPosition(),
-        new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
+        new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
   }
 
 
@@ -180,7 +194,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double TurnOutput() {
-    double turn = m_turningEncoder.getPosition();
+    double turn = m_turningEncoder.getAbsolutePosition().getValueAsDouble();
     return turn;
   }
 
@@ -195,7 +209,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double wheelAngle() {
-    var angle = new Rotation2d(m_turningEncoder.getPosition());
+    var angle = new Rotation2d(turnEncoder2.getPosition());
     double angleDeg = angle.getDegrees();
     return angleDeg;
   }

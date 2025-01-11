@@ -78,9 +78,9 @@ public static class ControlSystem {
     public static final int kRightBackDrive = 3;
     // Turning motors
     public static final int kLeftFrontTurn = 10;
-    public static final int kLeftBackTurn = 14;
-    public static final int kRightFrontTurn = 13;
-    public static final int kRightBackTurn = 15;
+    public static final int kLeftBackTurn = 9;
+    public static final int kRightFrontTurn = 11;
+    public static final int kRightBackTurn = 12;
     // CANCoder Can IDs for tunring encoders
     public static final int kLFturn = 5;
     public static final int kLBturn = 6;

@@ -19,8 +19,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-//import com.kauailabs.navx.frc.AHRS;
-//import edu.wpi.first.wpilibj.SPI;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 
 public class DriveTrain extends SubsystemBase {
@@ -56,8 +56,8 @@ public class DriveTrain extends SubsystemBase {
     DriveConstants.kBackRightChassisAngularOffset);
 
 
-  private final ADIS16448_IMU m_imu = new ADIS16448_IMU();
-  //private final AHRS m_imu = new AHRS(SPI.Port.kMXP);
+  //private final ADIS16448_IMU m_imu = new ADIS16448_IMU();
+  private final AHRS m_imu = new AHRS(SPI.Port.kMXP);
   
     /***********************************************************************
      * navX-MXP: - Communication via RoboRIO MXP (SPI, I2C) and USB. - See
@@ -115,10 +115,10 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Odometry Angle", getOdometryAngle());
     
     //Display Kinematics
-    SmartDashboard.putNumber("Front Left Encoder Count", TurnCountFL());
-    SmartDashboard.putNumber("Back Left Encoder Count", TurnCountBL());
-    SmartDashboard.putNumber("Front Right Encoder Count", TurnCountFR());
-    SmartDashboard.putNumber("Back Right Encoder Count", TurnCountBR());
+    SmartDashboard.putNumber("Front Left Encoder Pos", TurnPosFL());
+    SmartDashboard.putNumber("Back Left Encoder Pos", TurnPosBL());
+    SmartDashboard.putNumber("Front Right Encoder Pos", TurnPosFR());
+    SmartDashboard.putNumber("Back Right Encoder Pos", TurnPosBR());
 
      //Display Wheel orientations
      SmartDashboard.putNumber("FL Wheel Angle", wheelAngleFL());
@@ -180,22 +180,22 @@ public class DriveTrain extends SubsystemBase {
   }
 
   // Measure turing encoder counts
-  public double TurnCountFR() {
+  public double TurnPosFR() {
     double turningOut = m_frontRight.TurnOutput();
     return turningOut;
   }
 
-  public double TurnCountFL() {
+  public double TurnPosFL() {
     double turningOut = m_frontLeft.TurnOutput();
     return turningOut;
   }
 
-  public double TurnCountBR() {
+  public double TurnPosBR() {
     double turningOut = m_backRight.TurnOutput();
     return turningOut;
   }
 
-  public double TurnCountBL() {
+  public double TurnPosBL() {
     double turningOut = m_backLeft.TurnOutput();
     return turningOut;
   }
