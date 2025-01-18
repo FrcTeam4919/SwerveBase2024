@@ -197,7 +197,7 @@ public class SwerveModule extends SubsystemBase {
     // relative to the chassis.
     return new SwerveModulePosition(
         m_driveEncoder.getPosition(),
-        new Rotation2d(m_turnEncoder.getPosition().getValueAsDouble() - m_moduleEncoderAngularOffset));
+        new Rotation2d(m_NEOturnEncoder.getPosition() - m_moduleEncoderAngularOffset));
   }
 
 
