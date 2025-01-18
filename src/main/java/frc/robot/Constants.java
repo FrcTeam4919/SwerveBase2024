@@ -29,18 +29,19 @@ public final class Constants {
     public static final double kDrivingEncoderPositionFactor = kWheelDiameterMeters/(gearRatio1st*gearRatio2nd*gearRatio3rd);
     public static final double kDrivingEncoderVelocityFactor = kDrivingEncoderPositionFactor/60; // meters per second
 
-    public static final double kTurningEncoderPositionFactor = (2 * Math.PI); //position in radians
+    public static final double kturnGearRatio = 14/50;
+    public static final double kTurningEncoderPositionFactor = (2 * Math.PI) * kturnGearRatio; //position in radians
     public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60; // meters per second
     
-    public static final double driveGainP = 1;
+    public static final double driveGainP = 0.1;
     public static final double driveGainI = 0;
     public static final double driveGainD = 0;
 
-    public static final double turnGainP = 0.3;
+    public static final double turnGainP = 0.01;
     public static final double turnGainI = 0;
     public static final double turnGainD = 0;
 
-    public static final double kAngleEncoderResolution = 4096;
+    public static final double kAngleEncoderResolution = 42;
     public static final boolean kTurningEncoderInverted = true;
     public static final double kTurningMinOutput = -1;
     public static final double kTurningMaxOutput = 1;
@@ -58,6 +59,8 @@ public final class Constants {
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = 0;
     public static final double kBackRightChassisAngularOffset = 0;
+
+    public static final double kChassisAngularOffset = 0;
 
     /*public static final SwerveDriveKinematics kswerveDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(WheelXdist, WheelYdist),
@@ -82,9 +85,9 @@ public static class ControlSystem {
     public static final int kRightFrontTurn = 11;
     public static final int kRightBackTurn = 12;
     // CANCoder Can IDs for tunring encoders
-    public static final int kLFturn = 5;
-    public static final int kLBturn = 6;
-    public static final int kRFturn = 7;
-    public static final int kRBturn = 8;
+    public static final int kLFturn = 13;
+    public static final int kLBturn = 16;
+    public static final int kRFturn = 14;
+    public static final int kRBturn = 15;
   }
 }
