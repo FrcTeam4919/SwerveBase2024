@@ -11,14 +11,22 @@ import frc.robot.Constants.motorConstants;
 
 public class Climb extends SubsystemBase {
   public Climb(){}
-   public Spark leftClimb = new CANSparkMax(motorConstants.CmotorL);
-   public Spark rightClimb = new CANSparkMax(motorConstants.CmotorR);
-
+  
+   private Spark leftClimb = new Spark(motorConstants.CmotorL);
+   private Spark rightClimb = new Spark(motorConstants.CmotorR);
+   
+   // private Encoder CLE = new Encoder(0,1,false,Encoder.EncodingType.k2X);
   public void climb(){
-
+   leftClimb.set(0.5);
+   rightClimb.set(0.5);
   }
-  public void letGo(){
-
+  public void LetGo(){
+    leftClimb.set(-0.5);
+    rightClimb.set(-0.5);
+  }
+  public void stop(){
+    leftClimb.set(0);
+   rightClimb.set(0);
   }
   @Override
   public void periodic() {
