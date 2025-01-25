@@ -87,4 +87,11 @@ public static class ControlSystem {
     public static final int kRFturn = 7;
     public static final int kRBturn = 8;
   }
+  public static class motorConstants{
+    public static final int CmotorL = 14;
+    public static final int CmotorR = 1;
+    public static final int Emotor = 2;
+    public static final int InmotorL= 10;
+    public static final int InmotorR= 5;
+  }
 }
