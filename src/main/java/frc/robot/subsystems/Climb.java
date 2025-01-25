@@ -14,8 +14,8 @@ public class Climb extends SubsystemBase {
   
    private Spark leftClimb = new Spark(motorConstants.CmotorL);
    private Spark rightClimb = new Spark(motorConstants.CmotorR);
-   
-   // private Encoder CLE = new Encoder(0,1,false,Encoder.EncodingType.k2X);
+   rightClimb.setInverted(true);
+   // private Encoder CLE = new Encoder(0,1,false,Encoder.RelativeEncoder.k2X);
   public void climb(){
    leftClimb.set(0.5);
    rightClimb.set(0.5);
@@ -24,6 +24,7 @@ public class Climb extends SubsystemBase {
     leftClimb.set(-0.5);
     rightClimb.set(-0.5);
   }
+  @Override
   public void stop(){
     leftClimb.set(0);
    rightClimb.set(0);

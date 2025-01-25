@@ -11,12 +11,14 @@ import frc.robot.Constants.motorConstants;
 
 public class Elevator extends SubsystemBase {
    private final Spark m_liftMotor = new Spark(motorConstants.Emotor);
-   
+    Encoder Flor = new Encoder(0,1, false, Encoder.CANcoder.k2x );
     public Elevator(){}
 
      //normal up/down for custom hights
      
     public void up(){ 
+     
+
        m_liftMotor.set(0.5);
 
     }
@@ -27,8 +29,13 @@ public class Elevator extends SubsystemBase {
     // set elevator to called location
   
    public void Hight(double level){
-        
+    double start =  Flor.getPosition();
+    double go = level - start;
+    if (go>0){
+      
+    }
    }
+   @Override
    public void stop(){
     m_liftMotor.set(0);
     
