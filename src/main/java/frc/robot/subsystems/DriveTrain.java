@@ -84,10 +84,10 @@ public class DriveTrain extends SubsystemBase {
       m_kinematics,
       new Rotation2d(m_imu.getAngle()),
       new SwerveModulePosition[] {
-        m_frontLeft.getPosition(),
-        m_frontRight.getPosition(),
-        m_backLeft.getPosition(),
-        m_backRight.getPosition()
+        m_frontLeft.getModulePosition(),
+        m_frontRight.getModulePosition(),
+        m_backLeft.getModulePosition(),
+        m_backRight.getModulePosition()
       });
 
   public DriveTrain() {}
@@ -99,10 +99,10 @@ public class DriveTrain extends SubsystemBase {
     m_odometry.update(
         Rotation2d.fromDegrees(m_imu.getAngle()),
         new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
+            m_frontLeft.getModulePosition(),
+            m_frontRight.getModulePosition(),
+            m_backLeft.getModulePosition(),
+            m_backRight.getModulePosition()
         });
 
     // Put values to SmartDashboard 
@@ -120,11 +120,17 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Front Right Encoder Pos", TurnPosFR());
     SmartDashboard.putNumber("Back Right Encoder Pos", TurnPosBR());
 
-     //Display Wheel orientations
+    //Display Wheel orientations
      SmartDashboard.putNumber("FL Wheel Angle", wheelAngleFL());
      SmartDashboard.putNumber("FR Wheel Angle", wheelAngleFR());
      SmartDashboard.putNumber("BL Wheel Angle", wheelAngleBL());
      SmartDashboard.putNumber("BR Wheel Angle", wheelAngleBR());
+
+    //Display Wheel orientations of NEOs
+     SmartDashboard.putNumber("FL Wheel Angle NEO", wheelAngleNEOFL());
+     SmartDashboard.putNumber("FR Wheel Angle NEO", wheelAngleNEOFR());
+     SmartDashboard.putNumber("BL Wheel Angle NEO", wheelAngleNEOBL());
+     SmartDashboard.putNumber("BR Wheel Angle NEO", wheelAngleNEOBR());
   }
 
   public final double getOdometryAngle() {
@@ -184,17 +190,14 @@ public class DriveTrain extends SubsystemBase {
     double turningOut = m_frontRight.TurnOutput();
     return turningOut;
   }
-
   public double TurnPosFL() {
     double turningOut = m_frontLeft.TurnOutput();
     return turningOut;
   }
-
   public double TurnPosBR() {
     double turningOut = m_backRight.TurnOutput();
     return turningOut;
   }
-
   public double TurnPosBL() {
     double turningOut = m_backLeft.TurnOutput();
     return turningOut;
@@ -205,17 +208,14 @@ public class DriveTrain extends SubsystemBase {
     double driveVelFL = m_frontLeft.DriveOutput();
     return driveVelFL;
   }
-
   public double DriveVelFR() {
     double driveVelFR = m_frontRight.DriveOutput();
     return driveVelFR;
   }
-
   public double DriveVelBL() {
     double driveVelBL = m_backLeft.DriveOutput();
     return driveVelBL;
   }
-
   public double DriveVelBR() {
     double driveVelBR = m_backRight.DriveOutput();
     return driveVelBR;
@@ -236,6 +236,24 @@ public class DriveTrain extends SubsystemBase {
   }
   public double wheelAngleBR() {
     double angle = m_backRight.wheelAngle();
+    return angle;
+  }
+
+  // Calculate wheel angles
+  public double wheelAngleNEOFL() {
+    double angle = m_frontLeft.getAngle().getDegrees();
+    return angle;
+  }
+  public double wheelAngleNEOFR() {
+    double angle = m_frontRight.getAngle().getDegrees();
+    return angle;
+  }
+  public double wheelAngleNEOBL() {
+    double angle = m_backLeft.getAngle().getDegrees();
+    return angle;
+  }
+  public double wheelAngleNEOBR() {
+    double angle = m_backRight.getAngle().getDegrees();
     return angle;
   }
 

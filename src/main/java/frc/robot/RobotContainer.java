@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.wpilibj2.command.RunCommand;
 /**
@@ -46,11 +47,11 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
       // Forward motion controls x speed (forward), sideways motion controls y speed (sideways).
         new RunCommand (  
-          () -> m_robotDrive.drive( 
-          m_StickOfHope.getX(),
-          m_StickOfHope.getY(), 
-          m_StickOfHope.getZ(),
-          DriveConstants.kTeleField),m_robotDrive)
+          () -> m_robotDrive.drive(
+            -MathUtil.applyDeadband(m_StickOfHope.getY(), DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_StickOfHope.getX(), DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_StickOfHope.getZ(), DriveConstants.kDriveDeadbandZ),
+            DriveConstants.kTeleField), m_robotDrive)
                
         );
    
