@@ -75,11 +75,7 @@ public class DriveTrain extends SubsystemBase {
      * Multiple navX-model devices on a single robot are supported.
      ************************************************************************/
     
-  // Slew rate filter variables for controlling lateral acceleration
-  private double m_currentRotation = 0.0;
-  private double m_currentTranslationDir = 0.0;
-  private double m_currentTranslationMag = 0.0;
-
+  
 
   private final SwerveDriveKinematics m_kinematics =
     new SwerveDriveKinematics(
@@ -211,7 +207,7 @@ public class DriveTrain extends SubsystemBase {
         fieldRelative
 //            ? ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, Rotation2d.fromDegrees(m_imu.getAngle()))
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_imu.getAngle()))
-//            : new ChassisSpeeds(0, 0.2, 0));
+//            : new ChassisSpeeds(20, 0, 0));
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
 
     //ChassisSpeeds Speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered);
@@ -226,9 +222,9 @@ public class DriveTrain extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]); 
       
-    System.out.printf("Module state Vel %f", swerveModuleStates[0].speedMetersPerSecond);
-    System.out.printf("Module state drive %f", m_frontLeft.DriveOutput());
-    System.out.printf("Module state 0 %f", swerveModuleStates[0].angle.getRadians());
+    System.out.printf("Module state Vel %f", swerveModuleStates[3].speedMetersPerSecond);
+    System.out.printf("Module state drive %f", m_backRight.getAngle().getDegrees());
+    System.out.printf("Module state 0 %f\n", swerveModuleStates[3].angle.getRadians());
   }
     
    

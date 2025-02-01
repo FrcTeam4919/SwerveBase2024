@@ -49,6 +49,7 @@ public class SwerveModule extends SubsystemBase {
   private int m_driveMotorChannel; //for debugging
 
   private double m_moduleEncoderAngularOffset;
+  private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   /**
@@ -127,7 +128,7 @@ public class SwerveModule extends SubsystemBase {
 
 
 
-    //m_desiredState.angle = new Rotation2d(m_turnEncoder.getPosition().getValueAsDouble());
+    //m_desiredState.angle = new Rotation2d(m_turnEncoder.getPosition());
     //m_driveEncoder.setPosition(0);
     resetEncoders();
 
@@ -144,15 +145,15 @@ public class SwerveModule extends SubsystemBase {
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
-    correctedDesiredState.angle = desiredState.angle;//.plus(Rotation2d.fromRadians(m_moduleEncoderAngularOffset));
+    correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
         new Rotation2d(m_turnEncoder.getPosition()));
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
-    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
-    m_turnPIDController.setReference(desiredState.angle.getDegrees(), CANSparkMax.ControlType.kPosition);
+    m_drivePIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+    m_turnPIDController.setReference(optimizedDesiredState.angle.getDegrees(), CANSparkMax.ControlType.kPosition);
 
     //m_desiredState = desiredState;
   }
