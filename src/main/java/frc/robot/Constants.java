@@ -30,16 +30,18 @@ public final class Constants {
     public static final double kDrivingEncoderVelocityFactor = kDrivingEncoderPositionFactor/60; // meters per second
 
     public static final double kturnGearRatio = 150/7;
-    public static final double kTurningEncoderPositionFactor = 1/(360*kturnGearRatio); // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
+    public static final double kTurningEncoderPositionFactor = 1*(kturnGearRatio)/1.25; // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
     public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60; // meters per second
     
-    public static final double driveGainP = 0.01;
-    public static final double driveGainI = 0;
-    public static final double driveGainD = 0;
+    public static final double driveGainP = 0.0002;
+    public static final double driveGainI = 0.00001;
+    public static final double driveGainD = 0.003;
+    public static final double driveFF = 0;//.01;//1/473;
 
-    public static final double turnGainP = 1;
+    public static final double turnGainP = 0.003;
     public static final double turnGainI = 0;
-    public static final double turnGainD = 0;
+    public static final double turnGainD = 0.05;
+    public static final double turnFF = 0;
 
     public static final double kAngleEncoderResolution = 42;
     public static final boolean kTurningEncoderInverted = true;
@@ -55,11 +57,11 @@ public final class Constants {
     public static final double WheelYdist = robotLength*0.5;
     public static final double WheelXdist = robotWidth*0.5;
 
-    // encoder angluar offset
-    public static final double kFrontLeftChassisAngularOffset = 0.005615;//*360;//Math.PI*2; 
-    public static final double kFrontRightChassisAngularOffset = -0.462891;//*360;//Math.PI*2;
-    public static final double kBackLeftChassisAngularOffset = -0.065918;//*360;//Math.PI*2;
-    public static final double kBackRightChassisAngularOffset = 0.177002;//*360;//Math.PI*2;
+    // encoder angluar offset in Degrees
+    public static final double kFrontLeftChassisAngularOffset = -0.014648*360;//Math.PI*2; 
+    public static final double kFrontRightChassisAngularOffset = -0.455322*360;//Math.PI*2;
+    public static final double kBackLeftChassisAngularOffset = -0.070313*360;//Math.PI*2;
+    public static final double kBackRightChassisAngularOffset = 0.178711*360;//Math.PI*2;
 
     public static final double kChassisAngularOffset = 0;
 
@@ -69,7 +71,7 @@ public final class Constants {
       new Translation2d(-WheelXdist, WheelYdist),
       new Translation2d(-WheelXdist, -WheelYdist));*/
 
-    public static final double kMaxSpeed = 1;
+    public static final double kMaxSpeed = 5;
     public static final double kMaxAngularSpeed = 0.25;
     public static final double kDriveDeadband = 0.1;
     public static final double kDriveDeadbandZ = 0.1;
