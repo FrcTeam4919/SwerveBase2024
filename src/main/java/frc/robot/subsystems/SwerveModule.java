@@ -129,6 +129,7 @@ public class SwerveModule extends SubsystemBase {
 
 
     //m_desiredState.angle = new Rotation2d(m_turnEncoder.getPosition());
+    //m_desiredState.angle = new Rotation2d(m_CANcoder.getAbsolutePosition().getValueAsDouble()).minus(Rotation2d.fromDegrees(m_moduleEncoderAngularOffset));
     //m_driveEncoder.setPosition(0);
     resetEncoders();
 
@@ -145,7 +146,7 @@ public class SwerveModule extends SubsystemBase {
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
-    correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
+    correctedDesiredState.angle = desiredState.angle;//.plus(Rotation2d.fromDegrees(-m_moduleEncoderAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
@@ -203,7 +204,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   private void resetToAbsolute() {
-    double absolutePosition = getCanCoder().getDegrees() - m_moduleEncoderAngularOffset*360;
+    double absolutePosition = getCanCoder().getDegrees() - m_moduleEncoderAngularOffset;
     m_turnEncoder.setPosition(absolutePosition);
   }
 
@@ -213,6 +214,10 @@ public class SwerveModule extends SubsystemBase {
 
   public Rotation2d getAngle() {
     return Rotation2d.fromDegrees(m_turnEncoder.getPosition());
+  }
+
+  public double getTurnAngle() {
+    return m_turnEncoder.getPosition();
   }
 
   public SwerveModuleState getState() {

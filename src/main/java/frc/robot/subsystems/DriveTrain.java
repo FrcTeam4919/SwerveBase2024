@@ -38,25 +38,25 @@ public class DriveTrain extends SubsystemBase {
     ControlSystem.kLeftFrontDrive,
     ControlSystem.kLeftFrontTurn, 
     ControlSystem.kLFturn, 
-    DriveConstants.kFrontLeftChassisAngularOffset);
+    DriveConstants.kFrontLeftModuleAngularOffset);
 
   private final SwerveModule m_frontRight = new SwerveModule(
     ControlSystem.kRightFrontDrive,
     ControlSystem.kRightFrontTurn, 
     ControlSystem.kRFturn,
-    DriveConstants.kFrontRightChassisAngularOffset);
+    DriveConstants.kFrontRightModuleAngularOffset);
 
   private final SwerveModule m_backLeft = new SwerveModule(
     ControlSystem.kLeftBackDrive,
     ControlSystem.kLeftBackTurn, 
     ControlSystem.kLBturn,
-    DriveConstants.kBackLeftChassisAngularOffset);
+    DriveConstants.kBackLeftModuleAngularOffset);
 
   private final SwerveModule m_backRight = new SwerveModule(
     ControlSystem.kRightBackDrive,
     ControlSystem.kRightBackTurn, 
     ControlSystem.kRBturn,
-    DriveConstants.kBackRightChassisAngularOffset);
+    DriveConstants.kBackRightModuleAngularOffset);
 
 
   //private final ADIS16448_IMU m_imu = new ADIS16448_IMU();
@@ -200,7 +200,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Y Speed", ySpeed);
     SmartDashboard.putNumber("Z Rot ", zRot);
     SmartDashboard.putBoolean("Field Relative ", fieldRelative);
-    if(xSpeed + ySpeed != 0) {System.out.printf("Original: Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeed, ySpeed, zRot);}
+    //if(xSpeed + ySpeed != 0) {System.out.printf("Original: Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeed, ySpeed, zRot);}
     //if(xSpeed + ySpeed != 0) {System.out.printf("Delivered: Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeedDelivered, ySpeedDelivered, rotDelivered);}
 
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(
@@ -222,9 +222,9 @@ public class DriveTrain extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]); 
       
-    System.out.printf("Module state Vel %f", swerveModuleStates[3].speedMetersPerSecond);
-    System.out.printf("Module state drive %f", m_backRight.getAngle().getDegrees());
-    System.out.printf("Module state 0 %f\n", swerveModuleStates[3].angle.getRadians());
+    //System.out.printf("Module state Vel %f", swerveModuleStates[3].speedMetersPerSecond);
+    //System.out.printf("Module state drive %f", m_backRight.getAngle().getDegrees());
+    //System.out.printf("Module state 0 %f\n", swerveModuleStates[3].angle.getDegrees());
   }
     
    
@@ -292,19 +292,19 @@ public class DriveTrain extends SubsystemBase {
 
   // Calculate wheel angles
   public double wheelAngleNEOFL() {
-    double angle = m_frontLeft.getAngle().getDegrees();
+    double angle = m_frontLeft.getTurnAngle();
     return angle;
   }
   public double wheelAngleNEOFR() {
-    double angle = m_frontRight.getAngle().getDegrees();
+    double angle = m_frontRight.getTurnAngle();
     return angle;
   }
   public double wheelAngleNEOBL() {
-    double angle = m_backLeft.getAngle().getDegrees();
+    double angle = m_backLeft.getTurnAngle();
     return angle;
   }
   public double wheelAngleNEOBR() {
-    double angle = m_backRight.getAngle().getDegrees();
+    double angle = m_backRight.getTurnAngle();
     return angle;
   }
 
