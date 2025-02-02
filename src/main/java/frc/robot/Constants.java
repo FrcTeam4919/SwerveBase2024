@@ -33,14 +33,14 @@ public final class Constants {
     public static final double kTurningEncoderPositionFactor = 1*(kturnGearRatio)/1.25; // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
     public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60; // meters per second
     
-    public static final double driveGainP = 0.0002;
+    public static final double driveGainP = 0.00002;
     public static final double driveGainI = 0.000001;
-    public static final double driveGainD = 0.0003;
+    public static final double driveGainD = 0.0015;
     public static final double driveFF = 1/473;
 
-    public static final double turnGainP = 0.0003;
-    public static final double turnGainI = 0;
-    public static final double turnGainD = 0.05;
+    public static final double turnGainP = 0.00075;
+    public static final double turnGainI = 0.000001;
+    public static final double turnGainD = 0.0025;
     public static final double turnFF = 0;
 
     public static final double kAngleEncoderResolution = 42;
@@ -57,12 +57,18 @@ public final class Constants {
     public static final double WheelYdist = robotLength*0.5;
     public static final double WheelXdist = robotWidth*0.5;
 
-    // encoder angluar offset in Degrees
-    public static final double kFrontLeftChassisAngularOffset = -0.014648*360;//Math.PI*2; 
-    public static final double kFrontRightChassisAngularOffset = -0.455322*360;//Math.PI*2;
-    public static final double kBackLeftChassisAngularOffset = -0.070313*360;//Math.PI*2;
-    public static final double kBackRightChassisAngularOffset = 0.178711*360;//Math.PI*2;
+    // module angluar offset in Degrees
+    public static final double kFrontLeftChassisAngularOffset = 135; 
+    public static final double kFrontRightChassisAngularOffset = 45;
+    public static final double kBackLeftChassisAngularOffset = -135;
+    public static final double kBackRightChassisAngularOffset = -45;
 
+    // encoder angluar offset in Degrees
+    public static final double kFrontLeftModuleAngularOffset = -0.001465*360;//Math.PI*2; 
+    public static final double kFrontRightModuleAngularOffset = -0.466046*360;//Math.PI*2;
+    public static final double kBackLeftModuleAngularOffset = -0.070313*360;//Math.PI*2;
+    public static final double kBackRightModuleAngularOffset = 0.182617*360;//Math.PI*2;
+ 
     public static final double kChassisAngularOffset = 0;
 
     /*public static final SwerveDriveKinematics kswerveDriveKinematics = new SwerveDriveKinematics(
@@ -71,7 +77,7 @@ public final class Constants {
       new Translation2d(-WheelXdist, WheelYdist),
       new Translation2d(-WheelXdist, -WheelYdist));*/
 
-    public static final double kMaxSpeed = 5000; // speed in cm/s
+    public static final double kMaxSpeed = 1000;//5000; // speed in mm/s
     public static final double kMaxAngularSpeed = 0.5;
     public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadbandZ = 0.1;
