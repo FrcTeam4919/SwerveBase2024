@@ -10,7 +10,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.DriveConstants;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 //import com.revrobotics.spark.SparkMax;
 //import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -65,6 +65,7 @@ public class SwerveModule extends SubsystemBase {
     int turningMotorChannel,
     int turningEncoderChannel,
     double moduleEncoderAngularOffset) {
+    //double chassisAngularOffset) {
 
     //setup driving motor info
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
@@ -88,7 +89,7 @@ public class SwerveModule extends SubsystemBase {
 
 
     //resetToAbsolute();
-
+    //m_chassisAngularOffset = chassisAngularOffset;
     m_moduleEncoderAngularOffset = moduleEncoderAngularOffset;
     
     /* Speed up signals to an appropriate rate */
@@ -123,8 +124,8 @@ public class SwerveModule extends SubsystemBase {
     // Set the PID wrapping for the controller
     m_turnPIDController.setPositionPIDWrappingEnabled(true);
     m_turnPIDController.setPositionPIDWrappingMinInput(0);
-    m_turnPIDController.setPositionPIDWrappingMaxInput(90);
-    //m_turnPIDController.setOutputRange(SwerveConstants.kTurningMinOutput, SwerveConstants.kTurningMaxOutput);
+    m_turnPIDController.setPositionPIDWrappingMaxInput(360);
+    m_turnPIDController.setOutputRange(SwerveConstants.kTurningMinOutput, SwerveConstants.kTurningMaxOutput);
 
 
 
@@ -146,7 +147,7 @@ public class SwerveModule extends SubsystemBase {
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
-    correctedDesiredState.angle = desiredState.angle;//.plus(Rotation2d.fromDegrees(-m_moduleEncoderAngularOffset));
+    correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(m_chassisAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
@@ -156,7 +157,7 @@ public class SwerveModule extends SubsystemBase {
     m_drivePIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turnPIDController.setReference(optimizedDesiredState.angle.getDegrees(), CANSparkMax.ControlType.kPosition);
 
-    //m_desiredState = desiredState;
+    m_desiredState = desiredState;
   }
 
   public SwerveModulePosition getModulePosition() {
@@ -174,7 +175,7 @@ public class SwerveModule extends SubsystemBase {
       m_turnEncoder.setPosition(-wheelAngle());
   }
 
-  public double TurnOutput() {
+  public double TurnOutput() { // informational function only
     double turn = m_CANcoder.getAbsolutePosition().getValueAsDouble();
     //double turn = m_turnEncoder.getPosition();
     return turn;
@@ -191,7 +192,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double wheelAngle() {
-    var angle = new Rotation2d(m_CANcoder.getAbsolutePosition().getValueAsDouble()*Math.PI*2); // CANcoder output is -0.5 to 0.5, must scale to radians by 2*PI
+    var angle = getCanCoder();//new Rotation2d(m_CANcoder.getAbsolutePosition().getValueAsDouble()*Math.PI*2); // CANcoder output is -0.5 to 0.5, must scale to radians by 2*PI
     //var angle = new Rotation2d(m_NEOturnEncoder.getPosition());
     double angleDeg = angle.getDegrees()-m_moduleEncoderAngularOffset;
     return angleDeg;
@@ -209,7 +210,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public Rotation2d getCanCoder() {
-    return Rotation2d.fromDegrees(m_CANcoder.getAbsolutePosition().getValueAsDouble());
+    return Rotation2d.fromDegrees(m_CANcoder.getAbsolutePosition().getValueAsDouble()*360);
   }
 
   public Rotation2d getAngle() {

@@ -39,24 +39,28 @@ public class DriveTrain extends SubsystemBase {
     ControlSystem.kLeftFrontTurn, 
     ControlSystem.kLFturn, 
     DriveConstants.kFrontLeftModuleAngularOffset);
+    //DriveConstants.kFrontLeftChassisAngularOffset);
 
   private final SwerveModule m_frontRight = new SwerveModule(
     ControlSystem.kRightFrontDrive,
     ControlSystem.kRightFrontTurn, 
     ControlSystem.kRFturn,
     DriveConstants.kFrontRightModuleAngularOffset);
+    //DriveConstants.kFrontRightChassisAngularOffset);
 
   private final SwerveModule m_backLeft = new SwerveModule(
     ControlSystem.kLeftBackDrive,
     ControlSystem.kLeftBackTurn, 
     ControlSystem.kLBturn,
     DriveConstants.kBackLeftModuleAngularOffset);
+    //DriveConstants.kBackLeftChassisAngularOffset);
 
   private final SwerveModule m_backRight = new SwerveModule(
     ControlSystem.kRightBackDrive,
     ControlSystem.kRightBackTurn, 
     ControlSystem.kRBturn,
     DriveConstants.kBackRightModuleAngularOffset);
+    //DriveConstants.kBackRightChassisAngularOffset);
 
 
   //private final ADIS16448_IMU m_imu = new ADIS16448_IMU();
@@ -80,7 +84,6 @@ public class DriveTrain extends SubsystemBase {
   private final SwerveDriveKinematics m_kinematics =
     new SwerveDriveKinematics(
         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
-
     
         
   private final SwerveDriveOdometry m_odometry =
@@ -222,9 +225,9 @@ public class DriveTrain extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]); 
       
-    //System.out.printf("Module state Vel %f", swerveModuleStates[3].speedMetersPerSecond);
+    //System.out.printf("Module state Vel %f", swerveModuleStates[0].speedMetersPerSecond);
     //System.out.printf("Module state drive %f", m_backRight.getAngle().getDegrees());
-    //System.out.printf("Module state 0 %f\n", swerveModuleStates[3].angle.getDegrees());
+    //System.out.printf("Module state 0 %f\n", swerveModuleStates[0].angle.getDegrees());
   }
     
    

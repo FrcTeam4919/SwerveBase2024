@@ -38,15 +38,15 @@ public final class Constants {
     public static final double driveGainD = 0.0015;
     public static final double driveFF = 1/473;
 
-    public static final double turnGainP = 0.00075;
+    public static final double turnGainP = 0.00075;//00075;
     public static final double turnGainI = 0.000001;
-    public static final double turnGainD = 0.0025;
+    public static final double turnGainD = 0.025;//.003;
     public static final double turnFF = 0;
 
     public static final double kAngleEncoderResolution = 42;
     public static final boolean kTurningEncoderInverted = true;
-    public static final double kTurningMinOutput = -1;
-    public static final double kTurningMaxOutput = 1;
+    public static final double kTurningMinOutput = -0.1;
+    public static final double kTurningMaxOutput = 0.1;
     public static final double kTurningEncoderPositionPIDMinInput = -1;
     public static final double kTurningEncoderPositionPIDMaxInput = 1;
   }
@@ -58,10 +58,10 @@ public final class Constants {
     public static final double WheelXdist = robotWidth*0.5;
 
     // module angluar offset in Degrees
-    public static final double kFrontLeftChassisAngularOffset = 135; 
-    public static final double kFrontRightChassisAngularOffset = 45;
-    public static final double kBackLeftChassisAngularOffset = -135;
-    public static final double kBackRightChassisAngularOffset = -45;
+    public static final double kFrontLeftChassisAngularOffset = 90; 
+    public static final double kFrontRightChassisAngularOffset = 0;
+    public static final double kBackLeftChassisAngularOffset = 270;
+    public static final double kBackRightChassisAngularOffset = 180;
 
     // encoder angluar offset in Degrees
     public static final double kFrontLeftModuleAngularOffset = -0.001465*360;//Math.PI*2; 
