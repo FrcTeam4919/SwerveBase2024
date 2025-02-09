@@ -21,27 +21,26 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double gearRatio1st = 14/50;
-    public static final double gearRatio2nd = 27/17;
-    public static final double gearRatio3rd = 15/45;
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4); // meters
+    public static final double gearRatio1st = 14.0/50.0;
+    public static final double gearRatio2nd = 27.0/17.0;
+    public static final double gearRatio3rd = 15.0/45.0;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4.0); // meters
 
-    public static final double kDrivingEncoderPositionFactor = kWheelDiameterMeters*Math.PI/(gearRatio1st*gearRatio2nd*gearRatio3rd);
-    public static final double kDrivingEncoderVelocityFactor = (kDrivingEncoderPositionFactor/60); // meters per second
+    public static final double kDrivingEncoderPositionFactor = kWheelDiameterMeters/(gearRatio1st*gearRatio2nd*gearRatio3rd);
+    public static final double kDrivingEncoderVelocityFactor = kDrivingEncoderPositionFactor/60.0; // meters per second
 
-    public static final double kturnGearRatio = 150/7;
-    public static final double kTurningEncoderPositionFactor = 1*(kturnGearRatio)/1.25; // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
-    public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60; // meters per second
+    public static final double kturnGearRatio = 150.0/7.0;
+    //public static final double kTurningEncoderPositionFactor = 1*(kturnGearRatio)/1.25; // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
+    public static final double kTurningEncoderPositionFactor = (360)/(kturnGearRatio); //position in radians
+    public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60.0; // meters per second
     
-    public static final double driveGainP = 0.00002;
-    public static final double driveGainI = 0.000001;
-    public static final double driveGainD = 0.0015;
-    public static final double driveFF = 1/473;
+    public static final double driveGainP = 0.0005;
+    public static final double driveGainI = 0.00005;
+    public static final double driveGainD = 0.0035;
 
-    public static final double turnGainP = 0.00075;//00075;
-    public static final double turnGainI = 0.000001;
-    public static final double turnGainD = 0.025;//.003;
-    public static final double turnFF = 0;
+    public static final double turnGainP = 0.005;
+    public static final double turnGainI = 0.00005;
+    public static final double turnGainD = 0.0035;
 
     public static final double kAngleEncoderResolution = 42;
     public static final boolean kTurningEncoderInverted = true;
@@ -57,19 +56,10 @@ public final class Constants {
     public static final double WheelYdist = robotLength*0.5;
     public static final double WheelXdist = robotWidth*0.5;
 
-    // module angluar offset in Degrees
-    public static final double kFrontLeftChassisAngularOffset = 90; 
+    public static final double kFrontLeftChassisAngularOffset = 0;
     public static final double kFrontRightChassisAngularOffset = 0;
-    public static final double kBackLeftChassisAngularOffset = 270;
-    public static final double kBackRightChassisAngularOffset = 180;
-
-    // encoder angluar offset in Degrees
-    public static final double kFrontLeftModuleAngularOffset = -0.001465*360;//Math.PI*2; 
-    public static final double kFrontRightModuleAngularOffset = -0.466046*360;//Math.PI*2;
-    public static final double kBackLeftModuleAngularOffset = -0.070313*360;//Math.PI*2;
-    public static final double kBackRightModuleAngularOffset = 0.182617*360;//Math.PI*2;
- 
-    public static final double kChassisAngularOffset = 0;
+    public static final double kBackLeftChassisAngularOffset = 0;
+    public static final double kBackRightChassisAngularOffset = 0;
 
     /*public static final SwerveDriveKinematics kswerveDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(WheelXdist, WheelYdist),
@@ -77,14 +67,22 @@ public final class Constants {
       new Translation2d(-WheelXdist, WheelYdist),
       new Translation2d(-WheelXdist, -WheelYdist));*/
 
-    public static final double kMaxSpeed = 1000;//5000; // speed in mm/s
-    public static final double kMaxAngularSpeed = 0.5;
+    // encoder angluar offset in Degrees
+    public static final double kFrontLeftModuleAngularOffset = -0.005371;//*360;//Math.PI*2; 
+    public static final double kFrontRightModuleAngularOffset = -.463135;//*360;//Math.PI*2;
+    public static final double kBackLeftModuleAngularOffset = -0.054932;//*360;//Math.PI*2;
+    public static final double kBackRightModuleAngularOffset = 0.187988;//*360;//Math.PI*2;
+ 
+    public static final double kChassisAngularOffset = 0;
+
+    public static final double kMaxSpeed = 15;
+    public static final double kMaxAngularSpeed = 5;
     public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadbandZ = 0.1;
     public static final boolean kTeleField = false;
   }
 
-public static class ControlSystem {
+  public static class ControlSystem {
     // Driving motor CAN IDs
     public static final int kLeftFrontDrive = 2;
     public static final int kLeftBackDrive = 4;
@@ -101,4 +99,18 @@ public static class ControlSystem {
     public static final int kRFturn = 14;
     public static final int kRBturn = 15;
   }
+
+  public static class motorConstants{
+    public static final int CmotorL = 17;
+    public static final int CmotorR = 18;
+    public static final int Emotor = 19;
+    public static final int InmotorL= 20;
+    public static final int InmotorR= 21;
+  }
+
+  // Vendor Dep URLS
+  // nav-x: "https://storage.googleapis.com/frc2025/NavX2025.json"
+  // phoenix5: "https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix5-frc2025-latest.json"
+  // phoenix6: "https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2025-latest.json"
+  // revrobotics: "https://software-metadata.revrobotics.com/REVLib-2025.json"
 }

@@ -16,10 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16448_IMU;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -80,43 +77,36 @@ public class DriveTrain extends SubsystemBase {
      ************************************************************************/
     
   
-
   private final SwerveDriveKinematics m_kinematics =
     new SwerveDriveKinematics(
         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+
     
         
   private final SwerveDriveOdometry m_odometry =
     new SwerveDriveOdometry(
       m_kinematics,
-      Rotation2d.fromDegrees(m_imu.getAngle()),
+      new Rotation2d(m_imu.getAngle()),
       new SwerveModulePosition[] {
-        m_frontLeft.getModulePosition(),
-        m_frontRight.getModulePosition(),
-        m_backLeft.getModulePosition(),
-        m_backRight.getModulePosition()
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_backLeft.getPosition(),
+        m_backRight.getPosition()
       });
 
-  public DriveTrain() {
-    try {
-      //m_imu.calibrate();
-      m_imu.reset();
-    }
-    catch (RuntimeException ex) {
-      DriverStation.reportError("Error instantiating navX MSP: " + ex.getMessage(), true);
-    }
-  }
-   
+  public DriveTrain() {}
+  
+
   @Override
   public void periodic() {
     // update odometry
     m_odometry.update(
         Rotation2d.fromDegrees(m_imu.getAngle()),
         new SwerveModulePosition[] {
-            m_frontLeft.getModulePosition(),
-            m_frontRight.getModulePosition(),
-            m_backLeft.getModulePosition(),
-            m_backRight.getModulePosition()
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
         });
 
     // Put values to SmartDashboard 
@@ -129,48 +119,22 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Odometry Angle", getOdometryAngle());
     
     //Display Kinematics
-    SmartDashboard.putNumber("Front Left Encoder Pos", TurnPosFL());
-    SmartDashboard.putNumber("Back Left Encoder Pos", TurnPosBL());
-    SmartDashboard.putNumber("Front Right Encoder Pos", TurnPosFR());
-    SmartDashboard.putNumber("Back Right Encoder Pos", TurnPosBR());
+    SmartDashboard.putNumber("Front Left Encoder Count", TurnCountFL());
+    SmartDashboard.putNumber("Back Left Encoder Count", TurnCountBL());
+    SmartDashboard.putNumber("Front Right Encoder Count", TurnCountFR());
+    SmartDashboard.putNumber("Back Right Encoder Count", TurnCountBR());
 
-    //Display Wheel orientations
+     //Display Wheel orientations
      SmartDashboard.putNumber("FL Wheel Angle", wheelAngleFL());
      SmartDashboard.putNumber("FR Wheel Angle", wheelAngleFR());
      SmartDashboard.putNumber("BL Wheel Angle", wheelAngleBL());
      SmartDashboard.putNumber("BR Wheel Angle", wheelAngleBR());
-
-    //Display Wheel orientations of NEOs
-     SmartDashboard.putNumber("FL Wheel Angle NEO", wheelAngleNEOFL());
-     SmartDashboard.putNumber("FR Wheel Angle NEO", wheelAngleNEOFR());
-     SmartDashboard.putNumber("BL Wheel Angle NEO", wheelAngleNEOBL());
-     SmartDashboard.putNumber("BR Wheel Angle NEO", wheelAngleNEOBR());
-  }
-
-  /**
-   * Returns the currently-estimated pose of the robot.
-   *
-   * @return The pose.
-   */
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
-
-  /**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose The pose to which to set the odometry.
-   */
-  public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_imu.getAngle()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getModulePosition(),
-            m_frontRight.getModulePosition(),
-            m_backLeft.getModulePosition(),
-            m_backRight.getModulePosition()
-        },
-        pose);
+      
+     //Display Wheel orientations
+     SmartDashboard.putNumber("FL NEO Wheel Angle", wheelAngleNEOFL());
+     SmartDashboard.putNumber("FR NEO Wheel Angle", wheelAngleNEOFR());
+     SmartDashboard.putNumber("BL NEO Wheel Angle", wheelAngleNEOBL());
+     SmartDashboard.putNumber("BR NEO Wheel Angle", wheelAngleNEOBR());
   }
 
   public final double getOdometryAngle() {
@@ -203,35 +167,25 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Y Speed", ySpeed);
     SmartDashboard.putNumber("Z Rot ", zRot);
     SmartDashboard.putBoolean("Field Relative ", fieldRelative);
-    //if(xSpeed + ySpeed != 0) {System.out.printf("Original: Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeed, ySpeed, zRot);}
-    //if(xSpeed + ySpeed != 0) {System.out.printf("Delivered: Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeedDelivered, ySpeedDelivered, rotDelivered);}
+    //if(xSpeed + ySpeed != 0) {System.out.printf("Field %b, x=%f, y=%f, rot=%f\n", fieldRelative, xSpeed, ySpeed, zRot);}
 
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative
-//            ? ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, 0, Rotation2d.fromDegrees(m_imu.getAngle()))
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_imu.getAngle()))
-//            : new ChassisSpeeds(20, 0, 0));
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-
-    //ChassisSpeeds Speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered);
-    //ChassisSpeeds Speeds = new ChassisSpeeds(0, 0.2, 0);
-
-    //SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(Speeds);
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeed);
-        
+    
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeed);
+    
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]); 
-      
-    //System.out.printf("Module state Vel %f", swerveModuleStates[0].speedMetersPerSecond);
-    //System.out.printf("Module state drive %f", m_backRight.getAngle().getDegrees());
-    //System.out.printf("Module state 0 %f\n", swerveModuleStates[0].angle.getDegrees());
+
+    System.out.printf("Module state 0 output %f", m_frontLeft.getPosition().angle.getDegrees());
+    System.out.printf("Module state 0 calc%f \n", swerveModuleStates[0].angle.getDegrees());
   }
     
-   
-
   public void resetEncoders() {
     //m_frontLeft.resetEncoders();
     //m_backLeft.resetEncoders();
@@ -240,19 +194,22 @@ public class DriveTrain extends SubsystemBase {
   }
 
   // Measure turing encoder counts
-  public double TurnPosFR() {
+  public double TurnCountFR() {
     double turningOut = m_frontRight.TurnOutput();
     return turningOut;
   }
-  public double TurnPosFL() {
+
+  public double TurnCountFL() {
     double turningOut = m_frontLeft.TurnOutput();
     return turningOut;
   }
-  public double TurnPosBR() {
+
+  public double TurnCountBR() {
     double turningOut = m_backRight.TurnOutput();
     return turningOut;
   }
-  public double TurnPosBL() {
+
+  public double TurnCountBL() {
     double turningOut = m_backLeft.TurnOutput();
     return turningOut;
   }
@@ -262,14 +219,17 @@ public class DriveTrain extends SubsystemBase {
     double driveVelFL = m_frontLeft.DriveOutput();
     return driveVelFL;
   }
+
   public double DriveVelFR() {
     double driveVelFR = m_frontRight.DriveOutput();
     return driveVelFR;
   }
+
   public double DriveVelBL() {
     double driveVelBL = m_backLeft.DriveOutput();
     return driveVelBL;
   }
+
   public double DriveVelBR() {
     double driveVelBR = m_backRight.DriveOutput();
     return driveVelBR;
