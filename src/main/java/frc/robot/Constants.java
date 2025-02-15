@@ -20,6 +20,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  // NOTE: All tunring math must be in Radians!!!
+
   public static class SwerveConstants {
     public static final double gearRatio1st = 14.0/50.0;
     public static final double gearRatio2nd = 27.0/17.0;
@@ -31,16 +33,16 @@ public final class Constants {
 
     public static final double kturnGearRatio = 150.0/7.0;
     //public static final double kTurningEncoderPositionFactor = 1*(kturnGearRatio)/1.25; // position in degrees  //(2 * Math.PI) / kturnGearRatio; //position in radians
-    public static final double kTurningEncoderPositionFactor = (360)/(kturnGearRatio); //position in radians
+    public static final double kTurningEncoderPositionFactor = (Math.PI*2)/(kturnGearRatio); //position in radians
     public static final double kTurningEncoderVelocityFactor = kTurningEncoderPositionFactor/60.0; // meters per second
     
     public static final double driveGainP = 0.0005;
     public static final double driveGainI = 0.00005;
     public static final double driveGainD = 0.0035;
 
-    public static final double turnGainP = 0.005;
-    public static final double turnGainI = 0.00005;
-    public static final double turnGainD = 0.0035;
+    public static final double turnGainP = 0.5;
+    public static final double turnGainI = 0.00001;
+    public static final double turnGainD = 0.01;
 
     public static final double kAngleEncoderResolution = 42;
     public static final boolean kTurningEncoderInverted = true;
@@ -51,8 +53,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final double robotWidth = Units.inchesToMeters(37);
-    public static final double robotLength = Units.inchesToMeters(37);
+    public static final double robotWidth = Units.inchesToMeters(37.0);
+    public static final double robotLength = Units.inchesToMeters(37.0);
     public static final double WheelYdist = robotLength*0.5;
     public static final double WheelXdist = robotWidth*0.5;
 
@@ -76,10 +78,10 @@ public final class Constants {
     public static final double kChassisAngularOffset = 0;
 
     public static final double kMaxSpeed = 15;
-    public static final double kMaxAngularSpeed = 5;
+    public static final double kMaxAngularSpeed = 10;
     public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadbandZ = 0.1;
-    public static final boolean kTeleField = false;
+    public static final boolean kTeleField = true;
   }
 
   public static class ControlSystem {
