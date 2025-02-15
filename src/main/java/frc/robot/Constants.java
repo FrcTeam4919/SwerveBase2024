@@ -81,7 +81,7 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 10;
     public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadbandZ = 0.1;
-    public static final boolean kTeleField = true;
+    public static final boolean kTeleField = false;
   }
 
   public static class ControlSystem {
