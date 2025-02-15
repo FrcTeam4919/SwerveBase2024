@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -76,7 +77,8 @@ public class SwerveModule extends SubsystemBase {
 
     //setup turning motor info
     m_turningMotorConfig
-      .inverted(SwerveConstants.kTurningEncoderInverted);
+      .inverted(SwerveConstants.kTurningEncoderInverted)
+      .idleMode(IdleMode.kCoast);
     m_turningMotorConfig.encoder
       .positionConversionFactor(SwerveConstants.kTurningEncoderPositionFactor)
       .velocityConversionFactor(SwerveConstants.kTurningEncoderVelocityFactor);
@@ -90,38 +92,9 @@ public class SwerveModule extends SubsystemBase {
     m_turnClosedLoopController = m_turningMotor.getClosedLoopController();
     m_CANcoder = new CANcoder(turningEncoderChannel);
     //m_CANcoder.configure.setInverted();
-    m_moduleEncoderAngularOffset = moduleEncoderAngularOffset*360;
+    m_moduleEncoderAngularOffset = moduleEncoderAngularOffset*Math.PI*2;  // in radians    *360;
 
-    // Set the PID gains for the driving motor. 
-    // May need to tune.
-//    m_driveClosedLoopController.setFF(0);
-//    m_driveClosedLoopController.setOutputRange(-1, 1); 
-
-     // Set the PID gains for the turning motor. Note these are example gains, and you
-    // may need to tune them for your own robot!
-    /*m_turningPIDController.setFF(0);
-    m_turningPIDController.setOutputRange(SwerveConstants.kTurningMinOutput,
-        SwerveConstants.kTurningMaxOutput);*/
-    //m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-
-
-    // Set the distance (in this case, angle) in radians per pulse for the turning encoder.
-    // This is the the angle through an entire rotation (2 * pi) divided by the
-    // encoder resolution.
-    //m_turningEncoder.setDistancePerPulse(2 * Math.PI / SwerveConstants.kAngleEncoderResolution);
-
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    //m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-
-    // Enable PID wrap around for the turning motor. This will allow the PID
-    // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
-    // to 10 degrees will go through 0 rather than the other direction which is a
-    // longer route.
-    /*m_turningPIDController.setPositionPIDWrappingEnabled(true);
-    m_turningPIDController.setPositionPIDWrappingMinInput(SwerveConstants.kTurningEncoderPositionPIDMinInput);
-    m_turningPIDController.setPositionPIDWrappingMaxInput(SwerveConstants.kTurningEncoderPositionPIDMaxInput);
-    */
+    // NOTE: All turning math must be in RADIANS!!!
 
     //m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = getAngle();//new Rotation2d(m_CANcoder.getPosition().getValue());
@@ -149,7 +122,7 @@ public class SwerveModule extends SubsystemBase {
     
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
-    correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(m_moduleEncoderAngularOffset));
+    correctedDesiredState.angle = desiredState.angle;//.plus(Rotation2d.fromDegrees(m_moduleEncoderAngularOffset));
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
         getAngle());
@@ -158,15 +131,7 @@ public class SwerveModule extends SubsystemBase {
    
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_driveClosedLoopController.setReference(optimizedDesiredState.speedMetersPerSecond, SparkMax.ControlType.kVelocity);
-    m_turnClosedLoopController.setReference(optimizedDesiredState.angle.getDegrees(), SparkMax.ControlType.kPosition);
-
-
-    // Calculate the turning motor output from the turning PID controller.
-    //final double turnOutput = m_turningPIDController.calculate(wheelAngle(), optimizedDesiredState.angle.getDegrees());
-
-    // Calculate the turning motor output from the turning PID controller.
-    //m_driveMotor.set(driveOutput);
-    //m_turningMotor.set(turnOutput);
+    m_turnClosedLoopController.setReference(optimizedDesiredState.angle.getRadians(), SparkMax.ControlType.kPosition);
     
     m_desiredState = desiredState;
     
@@ -178,8 +143,7 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModulePosition(
         m_driveEncoder.getPosition(),
         getAngle());
-        //getCanCoder());
-        //new Rotation2d(m_CANcoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
+        
   }
 
 
@@ -187,12 +151,11 @@ public class SwerveModule extends SubsystemBase {
   public void resetEncoders() {
       m_driveEncoder.setPosition(0);
       m_turnEncoder.setPosition(wheelAngle());
-      //m_turningEncoder.reset();
   }
 
   public double TurnOutput() {
-    double turn = m_CANcoder.getAbsolutePosition().getValueAsDouble();//getCanCoder().getDegrees();//StatusSignal<Angle> turn = m_CANcoder.getPosition();
-    return turn;//.getValueAsDouble();
+    double turn = m_CANcoder.getAbsolutePosition().getValueAsDouble();
+    return turn;
   }
 
   public double DriveOutput() {
@@ -207,8 +170,8 @@ public class SwerveModule extends SubsystemBase {
 
   public double wheelAngle() {
     var angle = getCanCoder();
-    double angleDeg = angle.getDegrees()-m_moduleEncoderAngularOffset;
-    return angleDeg;
+    double angleRad = angle.getRadians()-m_moduleEncoderAngularOffset;
+    return angleRad;
   }
 
   public double distance() {
@@ -222,11 +185,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public Rotation2d getCanCoder() {
-    return Rotation2d.fromDegrees(m_CANcoder.getAbsolutePosition().getValueAsDouble()*360);
+    return Rotation2d.fromRadians(m_CANcoder.getAbsolutePosition().getValueAsDouble()*2*Math.PI);
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromDegrees(m_turnEncoder.getPosition());
+    return Rotation2d.fromRadians(m_turnEncoder.getPosition());
   }
 
   public double getTurnAngle() {
