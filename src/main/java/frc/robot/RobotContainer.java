@@ -48,8 +48,8 @@ public class RobotContainer {
       // Forward motion controls x speed (forward), sideways motion controls y speed (sideways).
         new RunCommand (  
           () -> m_robotDrive.drive( 
-          MathUtil.applyDeadband(m_StickOfHope.getX(), DriveConstants.kDriveDeadband),
-          MathUtil.applyDeadband(m_StickOfHope.getY(), DriveConstants.kDriveDeadband), 
+          MathUtil.applyDeadband(m_StickOfHope.getY(), DriveConstants.kDriveDeadband),
+          MathUtil.applyDeadband(m_StickOfHope.getX(), DriveConstants.kDriveDeadband), 
           MathUtil.applyDeadband(m_StickOfHope.getZ(), DriveConstants.kDriveDeadbandZ),
           DriveConstants.kTeleField),m_robotDrive)
                

@@ -182,8 +182,8 @@ public class DriveTrain extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]); 
 
-    System.out.printf("Module state 0 output %f", m_frontLeft.getPosition().angle.getDegrees());
-    System.out.printf("Module state 0 calc%f \n", swerveModuleStates[0].angle.getDegrees());
+    //System.out.printf("Module state 0 output %f", m_frontLeft.getPosition().angle.getDegrees());
+    //System.out.printf("Module state 0 calc%f \n", swerveModuleStates[0].angle.getDegrees());
   }
     
   public void resetEncoders() {
