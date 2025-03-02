@@ -33,7 +33,7 @@ public class RobotContainer {
 
   
   // subsystem
-  private final DriveTrain m_robotDrive = new DriveTrain();
+  public final DriveTrain m_robotDrive = new DriveTrain();
   // joystick 
   private final CommandJoystick m_StickOfHope = new CommandJoystick(0);
 
